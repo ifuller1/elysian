@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Form Submission</title>
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                font-family: Arial, sans-serif;
+            }
+            .container {
+                text-align: center;
+            }
+            form {
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <form id="myForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required />
+                <button type="submit">Submit</button>
+            </form>
+            <div id="response"></div>
+        </div>
+
+        <script>
+            document
+                .getElementById("myForm")
+                .addEventListener("submit", function (event) {
+                    event.preventDefault(); // Prevent form from submitting the traditional way
+
+                    var name = document.getElementById("name").value;
+                    var data = { name: name };
+
+                    fetch("https://example.com/api", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            document.getElementById("response").innerText =
+                                "Response: " + JSON.stringify(data);
+                        })
+                        .catch((error) => {
+                            document.getElementById("response").innerText =
+                                "Error: " + error;
+                        });
+                });
+        </script>
+    </body>
+</html>

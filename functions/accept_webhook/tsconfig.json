@@ -1,0 +1,15 @@
+{
+    "extends": "../tsconfig.json",
+    "baseUrl": ".",
+    "compilerOptions": {
+        "outDir": "./lib",
+        "typeRoots": ["./node_modules/@types", "node_modules/@google-cloud"],
+        "paths": {
+            "@/shared/*": ["../shared/*"]
+        },
+
+        "lib": ["dom", "dom.iterable"]
+    },
+    "include": ["src/**/*.ts", "tests/**/*.test.ts"],
+    "exclude": ["node_modules"]
+}

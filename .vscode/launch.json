@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Attach To Node Process (use npm start-debug first)",
+            "type": "node",
+            "request": "attach",
+            "port": 9229,
+            "restart": true,
+            "protocol": "inspector",
+            "skipFiles": ["<node_internals>/**"],
+
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/ianfuller/Dev/elysian/gh-service-account.json",
+                "GOOGLE_CLOUD_PROJECT": "elysian-client-services"
+            }
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+{
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "functions/accept_webhook"
+        },
+        {
+            "path": "functions/shared"
+        },
+        {
+            "path": "functions/get_name"
+        },
+        {
+            "path": "functions/query_name"
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "functions/**": true
+        }
+    }
+}
