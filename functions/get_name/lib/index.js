@@ -179,12 +179,16 @@ const $6723f10ebf982aaa$export$1935eb9cdd85a29d = async (personId, admin)=>{
     const db = (0, $d63ca567cdaf1add$export$a58d15c8682a241c)(admin);
     const userRef = db.collection($6723f10ebf982aaa$var$PERSON_COLLECTION_NAME).doc(personId);
     const person = await userRef.get();
-    if (!person.exists) return null;
+    if (!person.exists || person.data().deleted) return {
+        name: null,
+        deleted: true
+    };
+    const previousNames = person.data().previous_names ? person.data().previous_names : [];
     return {
         name: person.data().name,
         previous_names: [
             person.data().name,
-            ...person.data().previous_names
+            ...previousNames
         ],
         update_time: person.data().update_time,
         timestamp: person.data().timestamp
