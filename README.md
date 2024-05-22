@@ -4,6 +4,11 @@
 
 `node ./scripts/create-service-account.js` will create a service account with the correct permissions to deploy from terraform.
 
+## Run locally
+
+1. CD into the appropriate function `cd ./functions/get_name`
+2. Build and run `npm run build && npm run start`
+
 ## Build & Deploy (assumes local tf state)
 
 1. Build each function and create lib `node ./scripts/build-functions.js --keep`
@@ -12,11 +17,9 @@
 
 ## Calling deployed endpoints
 
-0. Use the front end to query the data:
+0. To use the frontend you can visit: [https://ifuller1.github.io/elysian/](https://ifuller1.github.io/elysian/)
 
-Visit: [https://ifuller1.github.io/elysian/](https://ifuller1.github.io/elysian/)
-
-1. Add a person:
+1. To add a person:
 
 ```
 curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net/accept_webhook' \
@@ -24,7 +27,7 @@ curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net
 --data '{"payload_type":"PersonAdded","payload_content":{"person_id":"3d0ee3a3-1f62-447a-9c3a-44c346a99d99","name":"Person 328","timestamp":"2024-05-21T15:56:50.879203Z"}}'
 ```
 
-2. Rename a person:
+2. To rename a person:
 
 ```
 curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net/accept_webhook' \
@@ -32,7 +35,7 @@ curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net
 --data '{"payload_type":"PersonRenamed","payload_content":{"person_id":"3d0ee3a3-1f62-447a-9c3a-44c346a99d99","name":"Renamed Person 7625","timestamp":"2024-05-21T18:25:12.444519Z"}}'
 ```
 
-3. Remove a person
+3. To remove a person
 
 ```
 curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net/accept_webhook' \
@@ -40,7 +43,15 @@ curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net
 --data '{"payload_type":"PersonRemoved","payload_content":{"person_id":"3d0ee3a3-1f62-447a-9c3a-44c346a99d99","timestamp":"2024-05-21T18:24:32.072185Z"}}'
 ```
 
-4. Query with natural language
+4. To query a person
+
+```
+curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net/get_name' \
+--header 'Content-Type: application/json' \
+--data '{"person_id":"3d0ee3a3-1f62-447a-9c3a-44c346a99d99"}'
+```
+
+5. Query with natural language
 
 ```
 curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net/query_name' \

@@ -34,12 +34,19 @@ const getPerson: (
     const person = await userRef.get();
 
     if (!person.exists || person.data().deleted) {
-        return null;
+        return {
+            name: null,
+            deleted: true,
+        };
     }
+
+    const previousNames = person.data().previous_names
+        ? person.data().previous_names
+        : [];
 
     return {
         name: person.data().name,
-        previous_names: [person.data().name, ...person.data().previous_names],
+        previous_names: [person.data().name, ...previousNames],
         update_time: person.data().update_time,
         timestamp: person.data().timestamp,
     } as GetNameResponse;
