@@ -39,6 +39,9 @@ const getPerson: (
 
     return {
         name: person.data().name,
+        previous_names: [person.data().name, ...person.data().previous_names],
+        update_time: person.data().update_time,
+        timestamp: person.data().timestamp,
     } as GetNameResponse;
 };
 

@@ -62,11 +62,16 @@
                     style="
                         align-self: flex-start;
                         text-align: justify;
-                        line-height: 1.6em;
+                        line-height: 2.3em;
                     "
                     >Please enter a query below, remembering to include a users
-                    uuid. E.g. "What's the name of user
-                    3d0ee3a3-1f62-447a-9c3a-44c346a99d99"
+                    uuid. E.g.<br />
+                    "What's the name of user
+                    3d0ee3a3-1f62-447a-9c3a-44c346a99d99" <br />
+                    "What's the previous names of user
+                    3d0ee3a3-1f62-447a-9c3a-44c346a99d99"<br />
+                    "When was the user 3d0ee3a3-1f62-447a-9c3a-44c346a99d99
+                    updated"
                 </label>
                 <textarea
                     id="message"
@@ -98,8 +103,8 @@
                     responseDiv.innerText = "";
 
                     fetch(
-                        "https://europe-west1-elysian-client-services.cloudfunctions.net/query_name",
-                        // "http://localhost:8080/",
+                        // "https://europe-west1-elysian-client-services.cloudfunctions.net/query_name",
+                        "http://localhost:8080/",
                         {
                             method: "POST",
                             headers: {
@@ -112,7 +117,7 @@
                         .then((data) => {
                             spinner.style.display = "none"; // Hide spinner
                             responseDiv.innerText =
-                                "Response: " + JSON.stringify(data);
+                                "Response: " + data.queryResult;
                         })
                         .catch((error) => {
                             spinner.style.display = "none"; // Hide spinner

@@ -6268,7 +6268,13 @@ const $6723f10ebf982aaa$export$1935eb9cdd85a29d = async (personId, admin)=>{
     const person = await userRef.get();
     if (!person.exists) return null;
     return {
-        name: person.data().name
+        name: person.data().name,
+        previous_names: [
+            person.data().name,
+            ...person.data().previous_names
+        ],
+        update_time: person.data().update_time,
+        timestamp: person.data().timestamp
     };
 };
 const $6723f10ebf982aaa$export$b54adde4327eb137 = async (personRenamed, admin, arrayUnion)=>{
@@ -6339,6 +6345,7 @@ var $5xUcU = parcelRequire("5xUcU");
 
 const $d2d350681eba934f$var$adminInstance = (0, ($parcel$interopDefault($7hYnT$firebaseadmin)));
 const $d2d350681eba934f$var$secretManagerClient = new (0, $7hYnT$googlecloudsecretmanager.SecretManagerServiceClient)();
+const $d2d350681eba934f$var$RETRY_TIMES = 3;
 const $d2d350681eba934f$export$c3c52e219617878 = async (req, res)=>{
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -6369,40 +6376,46 @@ const $d2d350681eba934f$export$c3c52e219617878 = async (req, res)=>{
 
             Please return the following json structure {uuid: 'the uuid you found in the query', property: 'the property you found in the query, e.g. if the user asked for the name, this would be 'name'}
 
-            Please do not return any markdown formatting. I want the raw json object.
+            Please do not return any markdown formatting. I want the raw json object as the result will be parsed with JSON.parse()
         `;
         const openApiKey = await (0, $54edb487244bebe6$export$16a2e1e060ed5bd7)("OPEN_API_KEY", $d2d350681eba934f$var$secretManagerClient);
         const openai = new (0, (/*@__PURE__*/$parcel$interopDefault($5xUcU)))({
             apiKey: openApiKey
         }); // would normally come from google secret manager
-        const chatCompletion = await openai.chat.completions.create({
-            messages: [
-                {
-                    role: "system",
-                    content: systemPrompt
-                },
-                {
-                    role: "user",
-                    content: userPrompt
-                }
-            ],
-            model: "gpt-4o"
-        });
-        const query = chatCompletion.choices[0].message.content;
-        if (!query) return res.status(400).send("Could not generate query from the given prompt.");
-        const queryJson = JSON.parse(query);
-        const uuid = queryJson.uuid;
-        const property = queryJson.property;
-        const result = await (0, $6723f10ebf982aaa$export$1935eb9cdd85a29d)(uuid, $d2d350681eba934f$var$adminInstance);
-        if (!result) return res.status(400).send({
-            error: `no matching user found ${uuid}`
-        });
-        if (!result[property]) return res.status(400).send({
-            error: `no matching property found  ${property}`
-        });
-        return res.status((0, $52899a3cb135ca77$exports.HttpStatus).OK).send({
-            queryResult: result[property]
-        });
+        // chat gpt doesn't always return valid json, give it a second try
+        for (const tryCount of [
+            ...Array($d2d350681eba934f$var$RETRY_TIMES).keys()
+        ]){
+            console.log(`Try count: ${tryCount}`);
+            const chatCompletion = await openai.chat.completions.create({
+                messages: [
+                    {
+                        role: "system",
+                        content: systemPrompt
+                    },
+                    {
+                        role: "user",
+                        content: userPrompt
+                    }
+                ],
+                model: "gpt-4o"
+            });
+            const query = chatCompletion.choices[0].message.content;
+            if (!query) return res.status(400).send("Could not generate query from the given prompt.");
+            const queryJson = JSON.parse(query);
+            const uuid = queryJson.uuid;
+            const property = queryJson.property;
+            const result = await (0, $6723f10ebf982aaa$export$1935eb9cdd85a29d)(uuid, $d2d350681eba934f$var$adminInstance);
+            if (!result) return res.status(400).send({
+                error: `no matching user found ${uuid}`
+            });
+            if (!result[property]) return res.status(400).send({
+                error: `no matching property found  ${property}`
+            });
+            return res.status((0, $52899a3cb135ca77$exports.HttpStatus).OK).send({
+                queryResult: result[property]
+            });
+        }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e) {
         console.error(`Unable to accept request. Unknown error: ${JSON.stringify(e)}`);

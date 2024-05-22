@@ -11,6 +11,8 @@ import { Request, Response } from "express";
 const adminInstance = admin as unknown as Admin;
 const secretManagerClient = new SecretManagerServiceClient();
 
+const RETRY_TIMES = 3;
+
 export const handler = async (req: Request, res: Response) => {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -44,7 +46,7 @@ export const handler = async (req: Request, res: Response) => {
 
             Please return the following json structure {uuid: 'the uuid you found in the query', property: 'the property you found in the query, e.g. if the user asked for the name, this would be 'name'}
 
-            Please do not return any markdown formatting. I want the raw json object.
+            Please do not return any markdown formatting. I want the raw json object as the result will be parsed with JSON.parse()
         `;
 
         const openApiKey = (await getSecret(
@@ -54,44 +56,49 @@ export const handler = async (req: Request, res: Response) => {
 
         const openai = new OpenAI({ apiKey: openApiKey }); // would normally come from google secret manager
 
-        const chatCompletion = await openai.chat.completions.create({
-            messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: userPrompt },
-            ],
-            model: "gpt-4o",
-        });
+        // chat gpt doesn't always return valid json, give it a second try
+        for (const tryCount of [...Array(RETRY_TIMES).keys()]) {
+            console.log(`Try count: ${tryCount}`);
 
-        const query = chatCompletion.choices[0].message.content;
+            const chatCompletion = await openai.chat.completions.create({
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: userPrompt },
+                ],
+                model: "gpt-4o",
+            });
 
-        if (!query) {
+            const query = chatCompletion.choices[0].message.content;
+
+            if (!query) {
+                return res
+                    .status(400)
+                    .send("Could not generate query from the given prompt.");
+            }
+
+            const queryJson = JSON.parse(query);
+
+            const uuid = queryJson.uuid;
+            const property = queryJson.property;
+
+            const result = await getPerson(uuid, adminInstance);
+
+            if (!result) {
+                return res
+                    .status(400)
+                    .send({ error: `no matching user found ${uuid}` });
+            }
+
+            if (!result[property]) {
+                return res
+                    .status(400)
+                    .send({ error: `no matching property found  ${property}` });
+            }
+
             return res
-                .status(400)
-                .send("Could not generate query from the given prompt.");
+                .status(HttpStatus.OK)
+                .send({ queryResult: result[property] });
         }
-
-        const queryJson = JSON.parse(query);
-
-        const uuid = queryJson.uuid;
-        const property = queryJson.property;
-
-        const result = await getPerson(uuid, adminInstance);
-
-        if (!result) {
-            return res
-                .status(400)
-                .send({ error: `no matching user found ${uuid}` });
-        }
-
-        if (!result[property]) {
-            return res
-                .status(400)
-                .send({ error: `no matching property found  ${property}` });
-        }
-
-        return res
-            .status(HttpStatus.OK)
-            .send({ queryResult: result[property] });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
         console.error(
