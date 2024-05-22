@@ -72,6 +72,9 @@ curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net
 
 ### 30 Days
 
+0. Artifacts:
+   Remove uncessary local build artifacts from git.
+
 1. Unit Tests:
    Develop comprehensive unit tests for all existing API endpoints to ensure they function correctly.
    Utilize a testing framework like Jest or Mocha for robust test coverage.
