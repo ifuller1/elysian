@@ -37,7 +37,7 @@ curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net
 ```
 curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net/accept_webhook' \
 --header 'Content-Type: application/json' \
---data '{"payload_type":"PersonRemoved","payload_content":{"person_id":"3d0ee3a3-1f62-447a-9c3a-44c346a99d98","timestamp":"2024-05-21T18:24:32.072185Z"}}'
+--data '{"payload_type":"PersonRemoved","payload_content":{"person_id":"3d0ee3a3-1f62-447a-9c3a-44c346a99d99","timestamp":"2024-05-21T18:24:32.072185Z"}}'
 ```
 
 4. Query with natural language
