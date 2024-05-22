@@ -218,7 +218,7 @@ const $6723f10ebf982aaa$export$1935eb9cdd85a29d = async (personId, admin)=>{
             person.data().name,
             ...previousNames
         ],
-        update_time: person.data().update_time,
+        update_time: person.data().update_time ? person.data().update_time : person.data().timestamp,
         timestamp: person.data().timestamp
     };
 };
