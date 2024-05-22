@@ -1,11 +1,20 @@
 # elysian
 
+This repository contains the code for building and deploying the name endpoints to GCP. It assumes Terraform state is managed locally rather than backed by a bucket (which it should be).
+
+The content below outlines:
+
+-   how to run each function locally
+-   how to test the deployed endpoints/frontend
+-   some improvements to consider over the next few months
+
 ## Service Account
 
 `node ./scripts/create-service-account.js` will create a service account with the correct permissions to deploy from terraform.
 
 ## Run locally
 
+0. Make sure you're using the corrent node version `cat .nvmrc`
 1. CD into the appropriate function `cd ./functions/get_name`
 2. Build and run `npm run build && npm run start`
 
