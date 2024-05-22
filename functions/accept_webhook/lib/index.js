@@ -153,6 +153,34 @@ module.exports.httpStatusTextByCode = $79e025b3dd519d06$var$httpStatusTextByCode
 
 $parcel$export(module.exports, "handler", () => $d2d350681eba934f$export$c3c52e219617878);
 
+var $52899a3cb135ca77$exports = {};
+"use strict";
+var $52899a3cb135ca77$var$__createBinding = $52899a3cb135ca77$exports && $52899a3cb135ca77$exports.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) desc = {
+        enumerable: true,
+        get: function() {
+            return m[k];
+        }
+    };
+    Object.defineProperty(o, k2, desc);
+} : function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var $52899a3cb135ca77$var$__exportStar = $52899a3cb135ca77$exports && $52899a3cb135ca77$exports.__exportStar || function(m, exports1) {
+    for(var p in m)if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports1, p)) $52899a3cb135ca77$var$__createBinding(exports1, m, p);
+};
+Object.defineProperty($52899a3cb135ca77$exports, "__esModule", {
+    value: true
+});
+
+$52899a3cb135ca77$var$__exportStar((parcelRequire("c0cOI")), $52899a3cb135ca77$exports);
+
+$52899a3cb135ca77$var$__exportStar((parcelRequire("asJVJ")), $52899a3cb135ca77$exports);
+
+
 const $d63ca567cdaf1add$export$a58d15c8682a241c = (admin)=>{
     // Create a reference to the Firestore database
     const db = $d63ca567cdaf1add$export$c85a9fc8ff68c90c(admin).firestore();
@@ -213,34 +241,6 @@ const $6723f10ebf982aaa$export$a62f0f85c7a9c2e8 = async (personRemoved, admin)=>
     });
     return personRemoved;
 };
-
-
-var $52899a3cb135ca77$exports = {};
-"use strict";
-var $52899a3cb135ca77$var$__createBinding = $52899a3cb135ca77$exports && $52899a3cb135ca77$exports.__createBinding || (Object.create ? function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) desc = {
-        enumerable: true,
-        get: function() {
-            return m[k];
-        }
-    };
-    Object.defineProperty(o, k2, desc);
-} : function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-var $52899a3cb135ca77$var$__exportStar = $52899a3cb135ca77$exports && $52899a3cb135ca77$exports.__exportStar || function(m, exports1) {
-    for(var p in m)if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports1, p)) $52899a3cb135ca77$var$__createBinding(exports1, m, p);
-};
-Object.defineProperty($52899a3cb135ca77$exports, "__esModule", {
-    value: true
-});
-
-$52899a3cb135ca77$var$__exportStar((parcelRequire("c0cOI")), $52899a3cb135ca77$exports);
-
-$52899a3cb135ca77$var$__exportStar((parcelRequire("asJVJ")), $52899a3cb135ca77$exports);
 
 
 var $320a7c24a9146d2f$export$7debb50ef11d5e0b;
@@ -4301,14 +4301,43 @@ const $b8300621f0035581$export$18d37e8b6241fb97 = {
 
 
 const $d2d350681eba934f$var$adminInstance = (0, ($parcel$interopDefault($7hYnT$firebaseadmin)));
+const $d2d350681eba934f$var$arrayUnion = (0, ($parcel$interopDefault($7hYnT$firebaseadmin))).firestore.FieldValue.arrayUnion;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const $d2d350681eba934f$var$payloadHandlerMap = new Map([
+    [
+        "PersonAdded",
+        async (payload)=>{
+            return await (0, $6723f10ebf982aaa$export$c562c31bf17d291e)(payload, $d2d350681eba934f$var$adminInstance);
+        }
+    ],
+    [
+        "PersonRenamed",
+        async (payload)=>{
+            return await (0, $6723f10ebf982aaa$export$b54adde4327eb137)(payload, $d2d350681eba934f$var$adminInstance, $d2d350681eba934f$var$arrayUnion);
+        }
+    ],
+    [
+        "PersonRemoved",
+        async (payload)=>{
+            return await (0, $6723f10ebf982aaa$export$a62f0f85c7a9c2e8)(payload, $d2d350681eba934f$var$adminInstance);
+        }
+    ]
+]);
 const $d2d350681eba934f$export$c3c52e219617878 = async (req, res)=>{
     try {
-        const nameResponsePayload = (0, $b8300621f0035581$export$18d37e8b6241fb97).GetNameQuery.safeParse(req.body);
-        if (!nameResponsePayload.success) return res.status((0, $52899a3cb135ca77$exports.HttpStatus).BAD_REQUEST).send({
-            error: nameResponsePayload.error
+        const webhookPayload = (0, $b8300621f0035581$export$18d37e8b6241fb97).WebhookPayload.safeParse(req.body);
+        if (!webhookPayload.success) return res.status((0, $52899a3cb135ca77$exports.HttpStatus).BAD_REQUEST).send({
+            error: webhookPayload.error
         });
-        const result = await (0, $6723f10ebf982aaa$export$1935eb9cdd85a29d)(nameResponsePayload.data.person_id, $d2d350681eba934f$var$adminInstance);
-        return res.status((0, $52899a3cb135ca77$exports.HttpStatus).OK).send(result);
+        const actionHandler = $d2d350681eba934f$var$payloadHandlerMap.get(webhookPayload.data.payload_type);
+        if (!actionHandler) return res.status((0, $52899a3cb135ca77$exports.HttpStatus).BAD_REQUEST).send({
+            error: "Invalid payload type"
+        });
+        const result = await actionHandler(webhookPayload.data.payload_content);
+        return res.status((0, $52899a3cb135ca77$exports.HttpStatus).OK).send({
+            status: "success",
+            processed: result
+        });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e) {
         console.error(`Unable to accept request. Unknown error: ${JSON.stringify(e)}`);
