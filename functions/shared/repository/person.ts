@@ -33,7 +33,7 @@ const getPerson: (
 
     const person = await userRef.get();
 
-    if (!person.exists) {
+    if (!person.exists || person.data().deleted) {
         return null;
     }
 
