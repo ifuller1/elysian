@@ -93,6 +93,8 @@ curl --location 'https://europe-west1-elysian-client-services.cloudfunctions.net
 
 ### 60 Days
 
+0. Make the query_name endpoint more tolerant to GPT responses.
+
 1. Remove Any Duplicate Logic from Code:
    Conduct a code review to identify and refactor any duplicate logic.
    Improve code maintainability by following DRY (Don't Repeat Yourself) principles.
