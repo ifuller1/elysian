@@ -12,6 +12,16 @@ const adminInstance = admin as unknown as Admin;
 const secretManagerClient = new SecretManagerServiceClient();
 
 export const handler = async (req: Request, res: Response) => {
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.set("Access-Control-Allow-Headers", "Content-Type");
+
+    if (req.method === "OPTIONS") {
+        res.set("Access-Control-Max-Age", "3600");
+        res.status(204).send("");
+        return;
+    }
+
     try {
         const userPrompt = req.body;
 

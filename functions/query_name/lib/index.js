@@ -6271,7 +6271,7 @@ const $6723f10ebf982aaa$export$1935eb9cdd85a29d = async (personId, admin)=>{
         name: person.data().name
     };
 };
-const $6723f10ebf982aaa$export$b54adde4327eb137 = async (personRenamed, admin)=>{
+const $6723f10ebf982aaa$export$b54adde4327eb137 = async (personRenamed, admin, arrayUnion)=>{
     const db = (0, $d63ca567cdaf1add$export$a58d15c8682a241c)(admin);
     const userRef = db.collection($6723f10ebf982aaa$var$PERSON_COLLECTION_NAME).doc(personRenamed.person_id);
     const person = await userRef.get();
@@ -6279,7 +6279,8 @@ const $6723f10ebf982aaa$export$b54adde4327eb137 = async (personRenamed, admin)=>
     if (person.data().deleted) throw new Error("Person is deleted");
     await userRef.update({
         name: personRenamed.name,
-        update_time: personRenamed.timestamp
+        update_time: personRenamed.timestamp,
+        previous_names: arrayUnion(personRenamed.name)
     });
     return personRenamed;
 };
@@ -6339,6 +6340,14 @@ var $5xUcU = parcelRequire("5xUcU");
 const $d2d350681eba934f$var$adminInstance = (0, ($parcel$interopDefault($7hYnT$firebaseadmin)));
 const $d2d350681eba934f$var$secretManagerClient = new (0, $7hYnT$googlecloudsecretmanager.SecretManagerServiceClient)();
 const $d2d350681eba934f$export$c3c52e219617878 = async (req, res)=>{
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.set("Access-Control-Allow-Headers", "Content-Type");
+    if (req.method === "OPTIONS") {
+        res.set("Access-Control-Max-Age", "3600");
+        res.status(204).send("");
+        return;
+    }
     try {
         const userPrompt = req.body;
         // Generate the system prompt to guide the OpenAI API

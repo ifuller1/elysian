@@ -212,7 +212,7 @@ const $6723f10ebf982aaa$export$1935eb9cdd85a29d = async (personId, admin)=>{
         name: person.data().name
     };
 };
-const $6723f10ebf982aaa$export$b54adde4327eb137 = async (personRenamed, admin)=>{
+const $6723f10ebf982aaa$export$b54adde4327eb137 = async (personRenamed, admin, arrayUnion)=>{
     const db = (0, $d63ca567cdaf1add$export$a58d15c8682a241c)(admin);
     const userRef = db.collection($6723f10ebf982aaa$var$PERSON_COLLECTION_NAME).doc(personRenamed.person_id);
     const person = await userRef.get();
@@ -220,7 +220,8 @@ const $6723f10ebf982aaa$export$b54adde4327eb137 = async (personRenamed, admin)=>
     if (person.data().deleted) throw new Error("Person is deleted");
     await userRef.update({
         name: personRenamed.name,
-        update_time: personRenamed.timestamp
+        update_time: personRenamed.timestamp,
+        previous_names: arrayUnion(personRenamed.name)
     });
     return personRenamed;
 };
@@ -4294,6 +4295,7 @@ const $b8300621f0035581$export$18d37e8b6241fb97 = {
 
 
 const $d2d350681eba934f$var$adminInstance = (0, ($parcel$interopDefault($7hYnT$firebaseadmin)));
+const $d2d350681eba934f$var$arrayUnion = (0, ($parcel$interopDefault($7hYnT$firebaseadmin))).firestore.FieldValue.arrayUnion;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const $d2d350681eba934f$var$payloadHandlerMap = new Map([
     [
@@ -4305,7 +4307,7 @@ const $d2d350681eba934f$var$payloadHandlerMap = new Map([
     [
         "PersonRenamed",
         async (payload)=>{
-            return await (0, $6723f10ebf982aaa$export$b54adde4327eb137)(payload, $d2d350681eba934f$var$adminInstance);
+            return await (0, $6723f10ebf982aaa$export$b54adde4327eb137)(payload, $d2d350681eba934f$var$adminInstance, $d2d350681eba934f$var$arrayUnion);
         }
     ],
     [

@@ -1,6 +1,6 @@
-import { Admin } from "../type/google/admin";
 import { getFirebaseDb } from "../gcp/firebase";
 
+import { Admin, ArrayUnion } from "../type/google/admin";
 import {
     GetNameResponse,
     PersonAdded,
@@ -44,8 +44,9 @@ const getPerson: (
 
 const renamePerson: (
     personRenamed: PersonRenamed,
-    admin: Admin
-) => Promise<PersonRenamed> = async (personRenamed, admin) => {
+    admin: Admin,
+    arrayUnion: ArrayUnion
+) => Promise<PersonRenamed> = async (personRenamed, admin, arrayUnion) => {
     const db = getFirebaseDb(admin);
     const userRef = db
         .collection(PERSON_COLLECTION_NAME)
@@ -64,6 +65,7 @@ const renamePerson: (
     await userRef.update({
         name: personRenamed.name,
         update_time: personRenamed.timestamp,
+        previous_names: arrayUnion(personRenamed.name),
     });
 
     return personRenamed;

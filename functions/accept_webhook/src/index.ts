@@ -1,7 +1,7 @@
 import admin from "firebase-admin";
-import { Admin } from "@/shared/type/google/admin";
 import { HttpStatus } from "http-status-ts";
 
+import { Admin, ArrayUnion } from "@/shared/type/google/admin";
 import {
     createPerson,
     removePerson,
@@ -16,6 +16,8 @@ import {
 import { Request, Response } from "express";
 
 const adminInstance = admin as unknown as Admin;
+const arrayUnion = admin.firestore.FieldValue
+    .arrayUnion as unknown as ArrayUnion;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const payloadHandlerMap = new Map<string, (payload: any) => Promise<any>>([
@@ -28,7 +30,7 @@ const payloadHandlerMap = new Map<string, (payload: any) => Promise<any>>([
     [
         "PersonRenamed",
         async (payload: PersonRenamed) => {
-            return await renamePerson(payload, adminInstance);
+            return await renamePerson(payload, adminInstance, arrayUnion);
         },
     ],
     [
